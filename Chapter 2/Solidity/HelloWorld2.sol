@@ -2,7 +2,7 @@
 pragma solidity ^0.4.0;
 
 // Main smart contract code
-contract HelloWorld {
+contract HelloWorld2 {
     // Store the greeting string
     bytes32 public greetings;
     
