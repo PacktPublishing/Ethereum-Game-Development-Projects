@@ -1,7 +1,7 @@
 // Defines the compiler version
 pragma solidity ^0.4.24;
 
-import './library/Ownable.sol';
+import './Library/Ownable.sol';
 
 // Main Lottery game smart contract
 contract LotteryGame is Ownable {
