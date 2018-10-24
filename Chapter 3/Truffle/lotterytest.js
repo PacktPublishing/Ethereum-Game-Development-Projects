@@ -1,10 +1,12 @@
 var LotteryGame = artifacts.require("./LotteryGame.sol");
 
+// Get contract accounts
 contract('LotteryGame', function(accounts) {
+  
+  // First test
   it("should create a new Lottery correctly", function() {
     var meta;
 
-    // Get initial balances of first and second account.
     var account_owner = accounts[0];
 
     var maxTickets = 10;
@@ -13,21 +15,24 @@ contract('LotteryGame', function(accounts) {
 
     var ticketPrice = 0;
 
+    // Get contract instante
     return LotteryGame.deployed().then(function(instance) {
       meta = instance;
+      // New game
       return meta.newLotteryGame(maxTickets, ticketValue, prizePercentage, {from: account_owner});
     }).then(function() {
       return meta.getTicketPrice.call();
     }).then(function(price) {
       ticketPrice = price.toNumber();
+      // Test validation
       assert.equal(ticketValue, ticketPrice, "Ticket price isn't correct");
     });
   });
 
+  // Second test
   it("should allow buy tickets", function() {
     var meta;
 
-    // Get initial balances of first and second account.
     var account_owner = accounts[0];
     var account_player1 = accounts[1];
     var account_player2 = accounts[2];
@@ -41,7 +46,8 @@ contract('LotteryGame', function(accounts) {
     var ticketNumber3 = 0;
     var ticketNumber4 = 0;
 
-    return LotteryGame.deployed().then(function(instance) {
+     // Get contract instante
+   return LotteryGame.deployed().then(function(instance) {
       meta = instance;
       return meta.getTicketPrice.call();
     }).then(function(price) {
@@ -59,6 +65,7 @@ contract('LotteryGame', function(accounts) {
     }).then(function(ticketNumber) {
       ticketNumber4 = ticketNumber;
 
+      // Test validation
       assert(ticketNumber1 != 0, "Player 1 can't buy a ticket");
       assert(ticketNumber2 != 0, "Player 2 can't buy a ticket");
       assert(ticketNumber3 != 0, "Player 3 can't buy a ticket");
@@ -66,10 +73,10 @@ contract('LotteryGame', function(accounts) {
     });
   });
 
-  it("should allow run a draw", function() {
+ // 3rd test
+ it("should allow run a draw", function() {
     var meta;
 
-    // Get initial balances of first and second account.
     var account_owner = accounts[0];
     var account_player1 = accounts[1];
     var account_player2 = accounts[2];
@@ -92,7 +99,8 @@ contract('LotteryGame', function(accounts) {
 
     var winner = 0;
 
-    return LotteryGame.deployed().then(function(instance) {
+     // Get contract instante
+   return LotteryGame.deployed().then(function(instance) {
       meta = instance;
       return web3.eth.getBalance(account_player1);
     }).then(function(balance) {
@@ -139,6 +147,7 @@ contract('LotteryGame', function(accounts) {
       if (account_player4_ending_balance > account_player4_starting_balance) {
         winner = 4;
       }
+      // Test validation
       assert(lotteryPrize > 0, "There is no prize");
       assert(winner > 0, "There is no Winner");
     });
