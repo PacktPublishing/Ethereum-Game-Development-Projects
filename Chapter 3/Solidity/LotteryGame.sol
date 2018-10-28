@@ -8,7 +8,7 @@ contract LotteryGame is Ownable {
 
   address[] players; // Stores all the Lottery players
 
-  uint128 public maxTickets; // Maximum amount of players at the Lottery
+  uint128 public maxTickets; // Maximum players in the Lottery
   uint256 public ticketValue; // Price of each ticket
 
   uint64 public lotteryDraw; // Count how many draws we did so far
@@ -28,17 +28,17 @@ contract LotteryGame is Ownable {
       
   GameStatus status; // The curretn game status
 
-// Contructor
+// Constructor
 constructor() public {
     status = GameStatus.Stopped; // After deploy game is inactive
     lotteryDraw = 0; // Initialise for the first draw
     prizePercentage = 95; // The defualt is 95% of the balance goes to the prize and 5% goes to the owner
 }
 
-// Setup a new Lottery
+// Set up a new Lottery
 function newLotteryGame(uint128 _maxTickets, uint256 _ticketValue, uint16 _prizePercentage) public onlyOwner {
     require(status == GameStatus.Stopped, "Lottery still selling"); // Game must be over with a winner
-    require(address(this).balance == 0, "Balance is not zeroed"); // To start a new lotery balance must be 0 to avoid overlap with an unfinished draw
+    require(address(this).balance == 0, "Balance is not zeroed"); // To start a new lottery balance must be 0 to avoid overlap with an unfinished draw
     require(_maxTickets > 0, "Can no be zero");
     require(_ticketValue > 0, "Can no be zero");
     require(_prizePercentage > 0, "Can no be zero");
@@ -80,10 +80,10 @@ function buyTicket() public payable returns (uint256) {
 function runTheDraw() public onlyOwner returns (uint256) {
   require(status == GameStatus.Selling, "Lottery is not selling"); // Game must be selling
   require(players.length >= 2, "Not enough players"); // requires minimum 2 players
-  require(address(this).balance > 0, "Balance is zero"); // requires have a minimum balance
-  require(prizePercentage > 0, "Percentage is zero"); // requires have a minimum prize percentage
+  require(address(this).balance > 0, "Balance is zero"); // requires having a minimum balance
+  require(prizePercentage > 0, "Percentage is zero"); // requires having a minimum prize percentage
 
-  status = GameStatus.Stopped; // Game have a winner
+  status = GameStatus.Stopped; // Game has a winner
 
   // Get a random ticket number.
   uint256 winnerTicket = getWinnerTicketNumber();
@@ -97,7 +97,7 @@ function runTheDraw() public onlyOwner returns (uint256) {
   uint256 prizeAmount = (balance * prizePercentage) / 100;
   
   // send the rest of the balance to the owner.
-  uint256 onwerAmount = balance - prizeAmount;
+  uint256 ownerAmount = balance - prizeAmount;
 
   address owner = getOwner();
 
@@ -112,8 +112,8 @@ function runTheDraw() public onlyOwner returns (uint256) {
   // Transfer to the winner address
   winnerAddress.transfer(prizeAmount);
 
-  if (onwerAmount > 0) {
-    owner.transfer(onwerAmount);
+  if (ownerAmount > 0) {
+    owner.transfer(ownerAmount);
   }
 
   // Return the winner ticket number
@@ -152,7 +152,7 @@ function getLotteryPrize() public view returns (uint256) {
 // Get a random winner ticket index
 function getWinnerTicketNumber() internal view returns(uint256) {
   // There are many diferent solution to implement a random number
-  // here we get the hash of concatenated bytes with current dificult, block time stamp, and the players address
+  // here we get the hash of concatenated bytes with current difficulty, block time stamp, and the player's address
   uint256 randomNumber = uint256(keccak256(abi.encodePacked(block.difficulty, now, players)));
 
   // Return a value in the range of winner numbers

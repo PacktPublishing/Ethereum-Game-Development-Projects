@@ -11,7 +11,7 @@ contract Ownable {
     _owner = msg.sender;
   }
 
-  // Requires the sender be the owner 
+  // Requires the sender to be the owner 
   modifier onlyOwner() {
     require(isOwner(), "You must be the owner");
     _;
@@ -27,7 +27,7 @@ contract Ownable {
     return msg.sender == _owner;
   }
 
-  // The owner can transfer the ownnership to a new account
+    // The owner can transfer the ownership to a new account
   function transferOwnershipTo(address newOwner) public onlyOwner {
     _owner = newOwner;
   }
