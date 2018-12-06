@@ -9,7 +9,7 @@ contract CasinoToken is ERC20, ERC20Detailed {
     uint256 public constant INITIAL_SUPPLY = 10000 * (10 ** uint256(decimals()));
 
     // At the deploy sends all the initial supply to the msg.sender.
-    constructor () public ERC20Detailed("SimpleToken", "SIM", 18) {
+    constructor () public ERC20Detailed("CasinoToken", "CTK", 18) {
         _mint(msg.sender, INITIAL_SUPPLY);
     }
 }
