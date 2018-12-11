@@ -92,7 +92,6 @@ contract('CasinoToken', function(accounts) {
     });
   });
 
-
    // Buy coins test
   it("should buy Tokens", function() {
       var meta;
@@ -191,9 +190,8 @@ contract('CasinoToken', function(accounts) {
     }).then(function(balance) {
       account_player1_ending_balance = balance.toNumber();
       // Test validation
-      assert(false, "Last fails to shows events"+balance_player1);
-     //assert(account_player1_ending_balance > account_player1_starting_balance, "Token Balance of player 1 was not reduced"+balance_player1);
-      //assert(account_owner_ending_balance > account_owner_starting_balance, "Ether balance of onwer was not increased"+balance_player1);
+      assert(account_player1_ending_balance <= account_player1_starting_balance, "Token Balance of player 1 was not reduced"+balance_player1);
+      //assert(false, "Last fails to shows events"+balance_player1);
     });
 
   });

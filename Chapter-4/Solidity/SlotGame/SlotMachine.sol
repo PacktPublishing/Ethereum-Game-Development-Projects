@@ -46,9 +46,8 @@ contract SlotMachine is Ownable, ReentrancyGuard {
       
     GameStatus status; // The curretn game status
     
-    // Event with the result
-    // player, bet, prize, slot1, slot2, slot3
-    event SpinResult(address indexed player, uint playerbet, uint playerprize, uint spinslot1, uint spinslot2, uint spinslot3);// 0-> %5; 1 -> 80%; 2 -> loss, 3->error in callback;
+    // Event with the result: player, bet, prize, slot1, slot2, slot3
+    event SpinResult(address indexed player, uint playerbet, uint playerprize, uint spinslot1, uint spinslot2, uint spinslot3);
 
     // At the deploy define Casino Token address
     constructor() public {
@@ -67,7 +66,7 @@ contract SlotMachine is Ownable, ReentrancyGuard {
         status = GameStatus.Running; // After set token address is active
     }
 
-    // Set the token address
+    // Extract coins from the slot machine
     function extractCoins(address _wallet, uint _value) public onlyOwner {
         require(_value <= casinoToken.balanceOf(this));
         require(_wallet != address(0));
@@ -131,7 +130,6 @@ contract SlotMachine is Ownable, ReentrancyGuard {
         prizes[msg.sender] = payPrize(msg.sender, paytableIndex);
         
         emit SpinResult(msg.sender, bets[msg.sender], prizes[msg.sender], spins[msg.sender].slot1, spins[msg.sender].slot2, spins[msg.sender].slot3);
-        //delete players[myid];
     }
 
     // Get last player spin slot 1
@@ -175,11 +173,10 @@ contract SlotMachine is Ownable, ReentrancyGuard {
     }
 
     // Imprement the prize logic
-    function calculatePrize(address _player, uint _bet, uint _index) internal pure returns (uint) {
-        require(_player != address(0), "Player address can not be zero");
+    function calculatePrize(uint _bet, uint _index) internal pure returns (uint) {
         require(_index <= (maxPrize * 4), "Error while trying to calculate prize"); // The maximum index is maxPrize = maxIndex/4.
 
-       // prizes are returned in percentage, so 50 is 50% of the bet and 150 is 150% of the bet.
+        // index zero means no prize
        if (_index == 0) {
          return 0;
        }
@@ -191,10 +188,12 @@ contract SlotMachine is Ownable, ReentrancyGuard {
     function payPrize(address _player, uint _index) internal returns (uint) {
 
         // Calculate the prize based on player bet
-        uint prize = calculatePrize(_player, bets[_player], _index);
+        uint prize = calculatePrize(bets[_player], _index);
 
         // Send prize in tokens to the player
-        casinoToken.safeTransfer(_player, prize);
+        if (prize > 0) {               
+            casinoToken.safeTransfer(_player, prize);
+        }
 
         return prize;
     }
